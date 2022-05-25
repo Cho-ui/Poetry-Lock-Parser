@@ -7,7 +7,6 @@ import Tab from '@mui/material/Tab';
 import Container from '@mui/material/Container'
 import Upload from './components/Upload';
 import View from './components/View';
-//import './App.css';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 function App() {
@@ -22,7 +21,7 @@ function App() {
       <Router>
         <Box sx={{ flexGrow: 1 }}>
           <AppBar position="static">
-            <Toolbar>
+            <Toolbar sx={{justifyContent: "center"}}>
               <Tabs
                 value={tabValue}
                 onChange={handleChange}
