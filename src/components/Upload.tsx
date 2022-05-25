@@ -9,19 +9,27 @@ const Input = styled('input')({
 
 export default function Upload() {
     const [selectedFile, setSelectedFile] = useState<File>();
+    const [packageStrings, setPackageStrings] = useState<string[] | undefined>([]);
 
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
         if (!files) return;
 
-        console.log(files[0]);
         setSelectedFile(files[0]);
     }
 
     const parseFile = async () => {
         try {
             const fileText = await selectedFile?.text();
-            console.log(fileText);
+            let parseStrings = fileText?.split("[[package]]");
+            let packageStringArray = parseStrings?.map((pstring: string) => {
+                const header = "[[package]]";
+                pstring = header + pstring;
+                return pstring;
+            });
+            packageStringArray?.shift();
+            console.log(packageStringArray);
+            setPackageStrings(packageStringArray);
         } catch (error) {
             console.error(error);
         }
