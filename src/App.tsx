@@ -1,24 +1,48 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Box from '@mui/material/Box';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Container from '@mui/material/Container'
+import Upload from './components/Upload';
+import View from './components/View';
+//import './App.css';
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 function App() {
+  const [tabValue, setTabValue] = useState('upload')
+
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    setTabValue(newValue);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Router>
+        <Box sx={{ flexGrow: 1 }}>
+          <AppBar position="static">
+            <Toolbar>
+              <Tabs
+                value={tabValue}
+                onChange={handleChange}
+                textColor="inherit"
+                indicatorColor="primary"
+                aria-label="tab menu">
+                <Tab value="upload" to="/upload" component={Link} label="Upload" />
+                <Tab value="view" to="/view" component={Link} label="View" />
+              </Tabs>
+            </Toolbar>
+          </AppBar>
+        </Box>
+        <Container>
+          <Routes>
+            <Route path="/" element={<Upload />} />
+            <Route path="/upload" element={<Upload />} />
+            <Route path="/view" element={<View />} />
+          </Routes>
+        </Container>
+      </Router>
     </div>
   );
 }
