@@ -1,22 +1,18 @@
 export interface IPackage {
     packageArray: {
             name: string,
-            version: string,
             description: string,
-            category: string,
             optional: boolean,
-            pythonVersions: string,
-            packageDependencies?: [],
-            packageExtras?: []
+            foundAsPackage: boolean,
+            packageDependencies?: any[],
+            reverseDependencies?: []
     }[],
     package: {
         name: string,
-        version: string,
         description: string,
-        category: string,
         optional: boolean,
-        pythonVersions: string,
-        packageDependencies?: [],
-        packageExtras?: []
+        foundAsPackage: boolean,
+        packageDependencies?: any[],
+        reverseDependencies?: []
     }
 };

@@ -45,49 +45,93 @@ export default function Upload() {
             let packageArray: IPackage["packageArray"] = [];
 
             packageStringArray.forEach(node => {
-                // form an array of individual value strings to parse values from
+                // form an array of individual value strings to parse basic values from
                 if (node.includes("[[package]]")) {
                     let nodeRows = node.split("\n");
-                    nodeRows.length = 7;
-                    nodeRows.shift();
 
                     // get basic values for a package object
-                    let nameSub = nodeRows[0].substring(
-                        nodeRows[0].indexOf("\"") + 1,
-                        nodeRows[0].lastIndexOf("\""));
-
-                    let versionSub = nodeRows[1].substring(
+                    let nameSub = nodeRows[1].substring(
                         nodeRows[1].indexOf("\"") + 1,
                         nodeRows[1].lastIndexOf("\""));
 
-                    let descriptionSub = nodeRows[2].substring(
-                        nodeRows[2].indexOf("\"") + 1,
-                        nodeRows[2].lastIndexOf("\""));
-
-                    let categorySub = nodeRows[3].substring(
+                    let descriptionSub = nodeRows[3].substring(
                         nodeRows[3].indexOf("\"") + 1,
                         nodeRows[3].lastIndexOf("\""));
 
-                    let optionalSub = nodeRows[4].substring(
-                        nodeRows[4].indexOf("=") + 2)
+                    let optionalSub = nodeRows[5].substring(
+                        nodeRows[5].indexOf("=") + 2)
                     let optionalBool = optionalSub.toLowerCase() === 'true' ? true : false;
 
-                    let pythonVersionsSub = nodeRows[5].substring(
-                        nodeRows[5].indexOf("\"") + 1,
-                        nodeRows[5].lastIndexOf("\""));
-                    
-                    let newPackage: IPackage["package"] = 
-                    {name: nameSub,
-                    version: versionSub,
-                    description: descriptionSub,
-                    category: categorySub,
-                    optional: optionalBool,
-                    pythonVersions: pythonVersionsSub};
+                    let newPackage: IPackage["package"] =
+                    {
+                        name: nameSub,
+                        description: descriptionSub,
+                        optional: optionalBool,
+                        foundAsPackage: true
+                    };
 
-                    packageArray.push(newPackage); 
+                    packageArray.push(newPackage);
                 }
             })
-            console.log(packageArray); // basic objects logged
+            //console.log(packageArray); // logs basic objects
+
+            /* second function from this! */
+
+            packageStringArray.forEach(node => {
+                
+                // parse packages with dependencies
+                if (node.includes("dependencies")) {
+                    let nodeRows = node.split("\n");
+
+                    // gets the package name
+                    let packageWithoutDependencies = nodeRows[1].substring(
+                        nodeRows[1].indexOf("\"") + 1,
+                        nodeRows[1].lastIndexOf("\""));
+                        
+                    // trims array to include only dependency rows
+                    let trimmedFromStart = nodeRows.splice(8, (nodeRows.length - 1));
+                    let dependencyRows = trimmedFromStart.splice(0, (trimmedFromStart.indexOf("")));
+                    dependencyRows.shift();
+
+                    // creates a new package array for dependencies
+                    let packageDependencies: IPackage["packageArray"] = [];
+
+                    dependencyRows.forEach(row => {
+                        let dependencyPackage: IPackage["package"] = {
+                            name: "",
+                            description: "",
+                            optional: false,
+                            foundAsPackage: false
+                        };
+
+                        // parse package name from row
+                        let parseName = row.substring(0, (row.indexOf("=") - 1));
+                        dependencyPackage.name = parseName;
+
+                        // check whether the dependency is flagged as optional
+                        if (row.includes("optional") && row.includes("true")) {
+                            dependencyPackage.optional = true;    
+                        }
+
+                        // check whether a package with the same name is installed
+                        packageArray.forEach(p => {
+                            if (p.name === dependencyPackage.name) {
+                                dependencyPackage.foundAsPackage = true;
+                            }
+                        })
+
+                        // adds package to dependency array
+                        packageDependencies.push(dependencyPackage);
+                    })
+                    // adds dependency array to package object
+                    packageArray.forEach(p => {
+                        if (p.name === packageWithoutDependencies) {
+                            p.packageDependencies = packageDependencies;
+                        }
+                    })
+                }
+            })
+            console.log(packageArray); // logs array with dependencies
         }
     }
 
