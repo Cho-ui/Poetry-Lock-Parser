@@ -78,7 +78,7 @@ export default function Upload() {
             /* second function from this! */
 
             packageStringArray.forEach(node => {
-                
+
                 // parse packages with dependencies
                 if (node.includes("dependencies")) {
                     let nodeRows = node.split("\n");
@@ -87,7 +87,7 @@ export default function Upload() {
                     let packageWithoutDependencies = nodeRows[1].substring(
                         nodeRows[1].indexOf("\"") + 1,
                         nodeRows[1].lastIndexOf("\""));
-                        
+
                     // trims array to include only dependency rows
                     let trimmedFromStart = nodeRows.splice(8, (nodeRows.length - 1));
                     let dependencyRows = trimmedFromStart.splice(0, (trimmedFromStart.indexOf("")));
@@ -110,7 +110,7 @@ export default function Upload() {
 
                         // check whether the dependency is flagged as optional
                         if (row.includes("optional") && row.includes("true")) {
-                            dependencyPackage.optional = true;    
+                            dependencyPackage.optional = true;
                         }
 
                         // check whether a package with the same name is installed
@@ -131,7 +131,83 @@ export default function Upload() {
                     })
                 }
             })
-            console.log(packageArray); // logs array with dependencies
+            //console.log(packageArray); // logs array with dependencies
+
+            /* third function for this! */
+
+            packageStringArray.forEach(node => {
+
+                // parse packages with extras
+                if (node.includes("extras")) {
+                    let nodeRows = node.split("\n");
+
+                    // gets the package name
+                    let packageWithoutExtras = nodeRows[1].substring(
+                        nodeRows[1].indexOf("\"") + 1,
+                        nodeRows[1].lastIndexOf("\""));
+
+                    // trims array to include only extras
+                    let trimmedFromStart = nodeRows.splice(
+                        nodeRows.indexOf("[package.extras]"));
+                    let extraRows = trimmedFromStart.splice(0, (trimmedFromStart.indexOf("")));
+                    extraRows.shift();
+
+                    // split row at "= "
+                    extraRows.forEach(row => {
+                        let splitLine = row.split("= ");
+                        let extrasInString = splitLine[1].substring(1, splitLine[1].length - 1);
+
+                        // split at ","
+                        let singleExtras = extrasInString.split(", ");
+
+                        let trimmedSingleExtras: string[] = [];
+
+                        // trim and add single extra package names to array
+                        singleExtras.forEach(extra => {
+                            if (extra.includes(" ")) {
+                                extra = extra.substring(1, extra.indexOf(" "));
+                                trimmedSingleExtras.push(extra);
+                            } else {
+                                extra = extra.substring(1, extra.length - 1);
+                                trimmedSingleExtras.push(extra);
+                            }
+                        });
+                        
+                        // identify the correct package to add extras to
+                        packageArray.forEach(p => {
+                            if (p.name === packageWithoutExtras) {
+                                /* go through each package, check if the package
+                                 already has the extra as a dependency */
+                                if (p.packageDependencies === undefined) {
+                                    let newArray: IPackage["packageArray"] = [];
+                                    p.packageDependencies = newArray;
+                                }
+
+                                trimmedSingleExtras.forEach(extra => {
+                                    const found = p.packageDependencies?.filter(d => d.name === extra);
+                                    // if extra is not found as a dependency, add it
+                                    if (found?.length === 0) {
+                                        let dependencyPackage: IPackage["package"] = {
+                                            name: extra,
+                                            description: "",
+                                            optional: true,
+                                            foundAsPackage: false
+                                        };
+
+                                        // check if the extra is installed
+                                        const isInstalled = packageArray.filter(p => p.name === dependencyPackage.name);
+                                        if (isInstalled.length > 0) dependencyPackage.foundAsPackage = true;
+
+                                        // add extra as an optional dependency
+                                        p.packageDependencies?.push(dependencyPackage);
+                                    }
+                                })    
+                            }
+                        })
+                    })
+                }
+            })
+            console.log(packageArray); // logs array with full dependencies incl. extras
         }
     }
 
