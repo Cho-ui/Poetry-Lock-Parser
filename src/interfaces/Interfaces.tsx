@@ -5,7 +5,7 @@ export interface IPackage {
             optional: boolean,
             foundAsPackage: boolean,
             packageDependencies?: any[],
-            reverseDependencies?: []
+            reverseDependencies?: any[]
     }[],
     package: {
         name: string,
@@ -13,6 +13,6 @@ export interface IPackage {
         optional: boolean,
         foundAsPackage: boolean,
         packageDependencies?: any[],
-        reverseDependencies?: []
+        reverseDependencies?: any[]
     }
 };

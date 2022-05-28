@@ -22,6 +22,7 @@ export default function Upload() {
 
     const parseFile = async () => {
         try {
+            console.log(selectedFile?.name)
             const fileText = await selectedFile?.text();
             let parsePackageInfo = fileText?.split("[metadata]") // separates package info
             let parseStrings = parsePackageInfo?.[0].split("[[package]]");

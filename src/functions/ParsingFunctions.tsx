@@ -3,8 +3,8 @@ import { IPackage } from "../interfaces/Interfaces"
 export const createPackageDataStructure = (packageStringArray: string[] | undefined) => {
     if (packageStringArray) {
         let packageArray = parseObjects(packageStringArray);
+        packageArray = parseReverseDependencies(packageArray);
         console.log(packageArray);
-        // TODO: create reverse dependencies
     }
 }
 
@@ -188,4 +188,39 @@ const parseObjectExtras = (packageStringArray: string[] | undefined,
             }
         })
         return packageArray;
+}
+
+const parseReverseDependencies = (pArray: IPackage["packageArray"] | undefined) => {
+    let packageArray = pArray;
+
+    // go through each package in the package array
+    packageArray?.forEach(pObject => {
+        // create a reverse dependency array for use
+        let reverseDependencies: IPackage["packageArray"] = [];
+
+        // go through the dependency array of each package
+        packageArray?.forEach(p => {
+            /* find whether the pObject package 
+            can be found in any package's dependency array */           
+            const found = p.packageDependencies?.filter(d => d.name === pObject.name)
+            
+            /* If found, create an object for reverse dependency package
+             and add it. Dep and revDep-arrays excluded to avoid infinite array
+             structures. A similar solution is used in the other parsing functions
+             when needed. */
+            if (found?.length) {
+                const reverseDependencyPackage: IPackage["package"] = {
+                    name: p.name,
+                    description: p.description,
+                    optional: p.optional,
+                    foundAsPackage: p.foundAsPackage
+                };
+
+                reverseDependencies.push(reverseDependencyPackage);
+            }
+        })
+        // if dependencies were found, add a dependency array to pObject
+        if (reverseDependencies.length > 0) pObject.reverseDependencies = reverseDependencies
+    })
+    return packageArray;
 }
