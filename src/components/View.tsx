@@ -4,6 +4,7 @@ import { IPackage } from '../interfaces/Interfaces';
 
 type Props = {
     packages: IPackage["packageArray"] | undefined
+    setPackageName: React.Dispatch<React.SetStateAction<string>>
 }
 
 export default function View(props: Props) {
@@ -12,15 +13,25 @@ export default function View(props: Props) {
     useEffect(() => {
         console.log(props.packages)
     }, [props.packages]);
+
+    const savePackageName = (name: string) => {
+        props.setPackageName(name);
+    }
     
     // render packages, extra check to make sure package is installed
     const packageItem = (p: IPackage["package"], index: number) => {
         if (p.foundAsPackage) {
             return (
                 <div style={{marginTop: 10}} key={index}>
-                    <Link to="/">
+                    <Link to="/package" onClick={() => savePackageName(p.name)} key={index}>
                         {p.name}
                     </Link>
+                </div>
+            )
+        } else {
+            return (
+                <div style={{marginTop: 10}} key={index}>
+                    {p.name}
                 </div>
             )
         }
@@ -31,7 +42,7 @@ export default function View(props: Props) {
             return (
                 <div style={{marginBottom: 30}}>
                     <h5>Package index:</h5>
-                    {props.packages.map((item, index)=> (
+                    {props.packages.map((item, index) => (
                         <div style={{marginTop: 10}}>{packageItem(item, index)}</div>
                     ))}
                 </div>
