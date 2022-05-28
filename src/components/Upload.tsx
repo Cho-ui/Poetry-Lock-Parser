@@ -1,17 +1,37 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useState, useEffect } from "react";
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import { IPackage } from "../interfaces/Interfaces";
 import { createPackageDataStructure } from "../functions/ParsingFunctions";
+import { Link } from "react-router-dom";
+import { IPackage } from '../interfaces/Interfaces';
+
+
+type Props = {
+    tabValue: string,
+    setTabValue: React.Dispatch<React.SetStateAction<string>>,
+    packages: IPackage["packageArray"] | undefined,
+    setPackages: React.Dispatch<React.SetStateAction<{
+        name: string,
+        description: string,
+        optional: boolean,
+        foundAsPackage: boolean,
+        packageDependencies?: any[],
+        reverseDependencies?: any[]
+        }[] | undefined>>
+}
 
 const Input = styled('input')({
     display: 'none',
 });
 
-export default function Upload() {
+export default function Upload(props: Props) {
     const [selectedFile, setSelectedFile] = useState<File>();
-//    const [packages, setPackages] = useState<IPackage["packageArray"]>([]);
+
+    useEffect(() => {
+        console.log(props.packages)
+    }, [props.packages]);
+    
 
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
@@ -22,7 +42,7 @@ export default function Upload() {
 
     const parseFile = async () => {
         try {
-            console.log(selectedFile?.name)
+            //console.log(selectedFile?.name)
             const fileText = await selectedFile?.text();
             let parsePackageInfo = fileText?.split("[metadata]") // separates package info
             let parseStrings = parsePackageInfo?.[0].split("[[package]]");
@@ -32,7 +52,10 @@ export default function Upload() {
                 return pstring;
             });
             packageStringArray?.shift();
-            createPackageDataStructure(packageStringArray);
+            let packageArray = createPackageDataStructure(packageStringArray);
+            props.setPackages(packageArray);
+            // change the navigation highlight
+            props.setTabValue("view")
         } catch (error) {
             console.error(error);
         }
@@ -47,9 +70,11 @@ export default function Upload() {
                     <Button variant="contained" component="span">
                         Upload Poetry.lock file
                     </Button>
+                    <Link to={{pathname: "/view" }}>
                     <Button variant="contained" onClick={() => parseFile()}>
                         Parse
                     </Button>
+                    </Link>
                 </Stack>
             </label>
         </div>

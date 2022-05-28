@@ -8,9 +8,11 @@ import Container from '@mui/material/Container'
 import Upload from './components/Upload';
 import View from './components/View';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { IPackage } from './interfaces/Interfaces';
 
 function App() {
-  const [tabValue, setTabValue] = useState('upload')
+  const [tabValue, setTabValue] = useState('upload');
+  const [packages, setPackages] = useState<IPackage["packageArray"] | undefined>([]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setTabValue(newValue);
@@ -36,9 +38,11 @@ function App() {
         </Box>
         <Container>
           <Routes>
-            <Route path="/" element={<Upload />} />
-            <Route path="/upload" element={<Upload />} />
-            <Route path="/view" element={<View />} />
+            <Route path="/" element={<Upload tabValue={tabValue} setTabValue={setTabValue}
+            setPackages={setPackages} packages={packages} />} />
+            <Route path="/upload" element={<Upload tabValue={tabValue} setTabValue={setTabValue}
+            setPackages={setPackages} packages={packages} />} />
+            <Route path="/view" element={<View packages={packages} />} />
           </Routes>
         </Container>
       </Router>

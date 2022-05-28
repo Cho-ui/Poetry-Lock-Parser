@@ -4,7 +4,9 @@ export const createPackageDataStructure = (packageStringArray: string[] | undefi
     if (packageStringArray) {
         let packageArray = parseObjects(packageStringArray);
         packageArray = parseReverseDependencies(packageArray);
-        console.log(packageArray);
+        // make sure datastructure is sorted according to name
+        packageArray?.sort((a, b) => a.name.localeCompare(b.name));
+        return packageArray;
     }
 }
 
