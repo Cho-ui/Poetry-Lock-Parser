@@ -38,7 +38,7 @@ export default function Package(props: Props) {
         }
 
         return (
-            <div style={{marginBottom: 30}}>
+            <div style={{marginBottom: 10}}>
                 <h2>{packageToDisplay.name}</h2>
                 <p><b>Description:</b> <br/><i>{packageToDisplay.description}</i></p>
                 <b>Dependencies: </b>
@@ -54,6 +54,7 @@ export default function Package(props: Props) {
                         packageItem(item, index)
                     ))}
                 </div>
+                <hr/>
             </div>
         )
     }
@@ -78,10 +79,15 @@ export default function Package(props: Props) {
 
     return (
         <div style={{
-            display: "flex", justifyContent: "center",
+            display: "flex", flexDirection: "column", justifyContent: "center",
             alignItems: "center", marginTop: 20
         }}>
             <Package />
+            <div style={{marginBottom: 30}}>
+                <Link to="/view">
+                    return to Index View
+                </Link>
+            </div>
         </div>
     )
 }

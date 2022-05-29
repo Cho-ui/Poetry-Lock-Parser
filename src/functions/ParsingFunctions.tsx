@@ -103,6 +103,7 @@ const parseObjectDependencies = (packageStringArray: string[] | undefined,
                 packageArray.forEach(p => {
                     if (p.name === packageWithoutDependencies) {
                         p.packageDependencies = packageDependencies;
+                        p.packageDependencies?.sort((a, b) => a.name.localeCompare(b.name));
                     }
                 })
             }
@@ -182,6 +183,7 @@ const parseObjectExtras = (packageStringArray: string[] | undefined,
                                     }
                                     // add extra as an optional dependency
                                     p.packageDependencies?.push(dependencyPackage);
+                                    p.packageDependencies?.sort((a, b) => a.name.localeCompare(b.name));
                                 }
                             })    
                         }
@@ -222,7 +224,10 @@ const parseReverseDependencies = (pArray: IPackage["packageArray"] | undefined) 
             }
         })
         // if dependencies were found, add a dependency array to pObject
-        if (reverseDependencies.length > 0) pObject.reverseDependencies = reverseDependencies
+        if (reverseDependencies.length > 0) {
+            reverseDependencies?.sort((a, b) => a.name.localeCompare(b.name))
+            pObject.reverseDependencies = reverseDependencies
+        }
     })
     return packageArray;
 }

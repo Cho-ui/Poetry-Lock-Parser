@@ -33,7 +33,7 @@ function App() {
                 indicatorColor="primary"
                 aria-label="tab menu">
                 <Tab value="upload" to="/upload" component={Link} label="Upload" />
-                <Tab value="view" to="/view" component={Link} label="View" />
+                <Tab value="view" to="/view" component={Link} label="Index View" />
               </Tabs>
             </Toolbar>
           </AppBar>

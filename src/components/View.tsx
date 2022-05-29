@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { IPackage } from '../interfaces/Interfaces';
 
@@ -8,11 +8,6 @@ type Props = {
 }
 
 export default function View(props: Props) {
-    
-    // dev effect, remove once done
-    useEffect(() => {
-        console.log(props.packages)
-    }, [props.packages]);
 
     const savePackageName = (name: string) => {
         props.setPackageName(name);
@@ -41,16 +36,16 @@ export default function View(props: Props) {
         if (props.packages?.length) {
             return (
                 <div style={{marginBottom: 30}}>
-                    <h5>Package index:</h5>
+                    <h2>Package index:</h2>
                     {props.packages.map((item, index) => (
-                        <div style={{marginTop: 10}}>{packageItem(item, index)}</div>
+                        <div style={{marginTop: 10}} key={index}>{packageItem(item, index)}</div>
                     ))}
                 </div>
             )
         } else {
             return (
                 <div>
-                    lista pitäisi valita
+                    Please upload a file for parsing on the upload page!
                 </div>
             )
         }
