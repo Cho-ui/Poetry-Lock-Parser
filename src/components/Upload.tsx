@@ -77,7 +77,7 @@ export default function Upload(props: Props) {
                     <li>Select a file for upload
                         into the program memory with the
                         "Upload poetry.lock"-button. </li>
-                    <li>Press the "Parse"-button to view the package Index
+                    <li>Press the "Parse"-button to view the package index
                         created from the file.
                         <br /><br />
                         <i>The poetry.lock file version must be 1.1!</i>
