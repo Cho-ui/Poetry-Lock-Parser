@@ -1,4 +1,4 @@
-# Poetry TOML file parser, application assignment for Reaktor's fall 2022 developer internship programme
+# Poetry.lock file parser, application assignment for Reaktor's fall 2022 developer internship programme
 
 This is a simple web application, built to meet the requirements set by Reaktor. The requirements can be
 viewed in detail via the link below:
