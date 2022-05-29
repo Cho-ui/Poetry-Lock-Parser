@@ -47,7 +47,7 @@ export default function Upload(props: Props) {
             const rightVersion = await checkVersion(selectedFile);
             if (!rightVersion) {
                 props.setTabValue("view");
-                alert("Incompatible poetry.lock-version, please use a version 1.1-file.");
+                alert("Incompatible poetry.lock-version or missing file. Please use a version 1.1-file.");
                 return;
             }
 
